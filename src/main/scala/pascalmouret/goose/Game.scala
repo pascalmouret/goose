@@ -73,12 +73,12 @@ sealed trait Game {
   }
 
   /**
-    * Here the next position is determined based on current position and the total dice roll. Because it's recursive
-    * it can technically solve any combinations of rules. That means it could also end up in an infinite loop on a
-    * badly designed board.
+    * Here the next position is determined based on the players dice roll. Because it's recursive it can technically
+    * solve any combinations of rules. It also means infinite loops are possible if the board is set up badly. It is
+    * assumed that's not the case.
     *
     * Note that the recursive calls do some weird math by subtracting the "by" from the next position. This is done
-    * so the "by" parameter can be passed on for use by the goose fields.
+    * so the "by" parameter can be preserved for use by the goose fields.
     *
     * @param player The player to be moved.
     * @param by How many spaces the player will move.
