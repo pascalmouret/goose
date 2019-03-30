@@ -7,7 +7,9 @@ object Main extends App {
   private val helpText =
     """Available commands:
       | - help
-      |   Dispay this text.
+      |   Display this text.
+      | - exit
+      |   Yeah, not the most engaging game, is it...
       | - move <player> <spaces>?
       |   Move the player. Will either roll 2d6 or move given amount.
       | - add <player>
@@ -30,6 +32,8 @@ object Main extends App {
       case "help" =>
         println(helpText)
         waitForInput(game)
+      case "exit" =>
+        sys.exit(0)
       case moveRegex(player, null) =>
         processNewState(game.movePlayer(player))
       case moveRegex(player, by) =>
