@@ -16,4 +16,4 @@ Assuming [sbt](https://www.scala-sbt.org/) is installed, simply clone this repos
 - `move <player> <spaces>?`  
   Move the player. Will either roll 2d6 or move given amount.
 - `add <player>`  
-  Add a player with the given name.""".stripMargin
+  Add a player with the given name.
