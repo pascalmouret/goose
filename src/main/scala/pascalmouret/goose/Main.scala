@@ -67,6 +67,8 @@ object Main extends App {
           s"$player was added to the game. Current players: ${game.players.map(_.name).mkString(", ")}."
         case PlayerRolledDice(player, total) =>
           s"$player rolled $total."
+        case PlayerGotPranked(victim, prankster, destination) =>
+          s"$victim got pranked by $prankster and ended up on $destination."
       }
     )
   }

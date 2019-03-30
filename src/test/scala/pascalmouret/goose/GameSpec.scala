@@ -28,11 +28,11 @@ class GameSpec extends Specification {
     "move a player" in {
       val game = Game(Set(Player("Gabble"), Player("Gander")), Board(10, Set.empty, Map.empty))
         .movePlayer("Gabble", 2)
-        .movePlayer("Gander", 2)
+        .movePlayer("Gander", 3)
         .movePlayer("Gabble", 3)
 
       game.playerPosition("Gabble") mustEqual 5
-      game.playerPosition("Gander") mustEqual 2
+      game.playerPosition("Gander") mustEqual 3
     }
 
     "bounce a player back if the last space is missed" in {
@@ -42,15 +42,24 @@ class GameSpec extends Specification {
     }
 
     "move same distance again when player lands on goose field" in {
-      Game(Set(Player("Gabble")), Board(10, Set(2, 4, 8), Map.empty))
+      Game(Set(Player("Gabble")), Board(10, Set(4, 6, 9), Map(2 -> 4)))
         .movePlayer("Gabble", 2)
-        .playerPosition("Gabble") mustEqual 6
+        .playerPosition("Gabble") mustEqual 8
     }
 
     "traverse bridges" in {
       Game(Set(Player("Gabble")), Board(10, Set(8), Map(1 -> 4, 4 -> 3, 3 -> 8)))
         .movePlayer("Gabble", 1)
         .playerPosition("Gabble") mustEqual 9
+    }
+
+    "allow pranking" in {
+      val game = Game(Set(Player("Gabble"), Player("Gander")), Board(10, Set.empty, Map.empty))
+        .movePlayer("Gabble", 2)
+        .movePlayer("Gander", 2)
+
+      game.playerPosition("Gabble") mustEqual 0
+      game.playerPosition("Gander") mustEqual 2
     }
   }
 }

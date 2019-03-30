@@ -1,6 +1,7 @@
 package pascalmouret.goose
 
 import scala.annotation.tailrec
+import scala.collection.mutable.ListBuffer
 
 case class PlayerExistsException(name: String) extends Exception(s"Player already exists: $name")
 case class PlayerDoesntExistsException(name: String) extends Exception(s"Player doesn't exists: $name")
@@ -36,6 +37,7 @@ case class PlayerBounced(name: String) extends Event
 case class PlayerWon(name: String) extends Event
 case class PlayerAdded(name: String) extends Event
 case class PlayerRolledDice(name: String, total: Int) extends Event
+case class PlayerGotPranked(victim: String, prankster: String, destination: Int) extends Event
 
 /**
   * A representation of a given game state. Any manipulation of the state will yield a new instance of [[Game]].
@@ -98,10 +100,19 @@ sealed trait Game {
       case Bridge(from, to) =>
         movePlayer(player.copy(position = to - by), by, log :+ PlayerTraversedBridge(player.name, from, to))
       case sum =>
-        nextState(
-          players.filterNot(_.name == player.name) + player.copy(position = sum),
-          log :+ PlayerLandedOn(player.name, sum)
-        )
+        // we map over the current players to adjust their positions, including pranks
+        val newLogs = ListBuffer.empty[Event] // mutable to simplify the code
+        val newPlayers = players map {
+          case p @ Player(name, pos) if pos == sum && name != player.name =>
+            val destination = players.find(_.name == player.name).get.position
+            newLogs.append(PlayerGotPranked(p.name, player.name, destination))
+            p.copy(position = destination)
+          case Player(name, _) if name == player.name =>
+            newLogs.prepend(PlayerLandedOn(player.name, sum))
+            player.copy(position = sum)
+          case p => p
+        }
+        nextState(newPlayers, log ++ newLogs.toList)
     }
   }
 
